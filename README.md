@@ -51,8 +51,7 @@ Docker-pro
 ├── .env
 └── README.md
 
-Project URL : https://github.com/Vimala2020/Docker-pro.git
-
+Project URL :https://roadmap.sh/projects/multiservice-docker
 Next Steps
 
 Integrate with Jenkins CI/CD for automated builds and deployment
