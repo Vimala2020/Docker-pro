@@ -51,7 +51,7 @@ Docker-pro
 ├── .env
 └── README.md
 
-URL : https://github.com/Vimala2020/Docker-pro.git
+Project URL : https://github.com/Vimala2020/Docker-pro.git
 
 Next Steps
 
