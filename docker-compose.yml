@@ -1,0 +1,71 @@
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: web
+    networks:
+      - app-network
+    depends_on:
+      - api
+    ports:
+    - "8080:3000" 
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: api
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/appdb
+      - REDIS_HOST=redis
+    networks:
+      - app-network
+    depends_on:
+      - mongo
+      - redis
+    ports:
+      - "5000:5000"
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/mongo_root_password
+    secrets:
+      - mongo_root_password
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo-data:
+  redis-data:
+
+secrets:
+  mongo_root_password:
+    file: ./secrets/mongo_root_password.txt
+
+networks:
+  app-network:
+    driver: bridge
